@@ -2,727 +2,225 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
+  <title>ChatZone</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat</title>
   <style>
-    :root {
-      --green: #128c7e;
-      --green-dark: #075e54;
-      --green-soft: #25d366;
-      --green-pale: #d9fdd3;
-      --bg: #efeae2;
-      --panel: #ffffff;
-      --sidebar: #f7f8fa;
-      --bar: #f0f2f5;
-      --text: #111b21;
-      --muted: #667781;
-      --line: #d1d7db;
-      --chat-pattern: rgba(255, 255, 255, 0.33);
-      --shadow: 0 10px 32px rgba(0, 0, 0, 0.18);
-    }
-
-    * { box-sizing: border-box; }
-
     body {
-      margin: 0;
-      font-family: Segoe UI, Tahoma, sans-serif;
-      background: linear-gradient(180deg, var(--green-dark) 0 128px, var(--bg) 128px 100%);
-      color: var(--text);
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      display:flex; 
+      flex-direction:column; 
+      height:100vh;
     }
 
-    button,
-    input {
-      font: inherit;
-    }
-
-    .app {
-      width: min(1380px, calc(100vw - 32px));
-      height: min(92vh, 980px);
-      margin: 16px auto;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      overflow: hidden;
-      border-radius: 14px;
-    }
-
-    .sidebar {
-      border-right: 1px solid var(--line);
-      background: var(--sidebar);
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-    }
-
-    .topbar,
-    .chat-topbar {
-      background: var(--bar);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .user,
-    .contact-head,
-    .user-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .user-meta {
-      justify-content: space-between;
-      width: 100%;
-      gap: 16px;
-    }
-
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: var(--green);
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      flex: 0 0 auto;
-    }
-
-    .chat-item .avatar {
-      width: 49px;
-      height: 49px;
-      background: #dfe5e7;
-      color: #44545f;
-    }
-
-    .name {
-      font-weight: 700;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .tiny {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .icon-btn,
-    .send-btn,
-    .mini-btn,
-    .attach-btn {
-      border: 0;
-      cursor: pointer;
-      font: inherit;
-    }
-
-    .icon-btn,
-    .attach-btn {
-      background: transparent;
-      color: var(--muted);
-    }
-
-    .icon-btn {
-      font-size: 0.95rem;
-      padding: 6px 10px;
-      border-radius: 999px;
-    }
-
-    .icon-btn:hover,
-    .attach-btn:hover {
-      background: rgba(17, 27, 33, 0.05);
-    }
-
-    .search {
-      padding: 8px 12px;
-      background: #fff;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .search-box {
-      background: #f0f2f5;
-      border-radius: 10px;
-      padding: 0 12px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .search-box span {
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .search input,
-    .add-form input,
-    .composer-input input {
-      width: 100%;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      padding: 12px 0;
-      font: inherit;
-      outline: none;
-      background: transparent;
-    }
-
-    .add-form input {
-      background: #fff;
-      border-color: var(--line);
-      padding: 12px 14px;
-    }
-
-    .search-box:focus-within,
-    .add-form input:focus,
-    .composer-input:focus-within {
-      box-shadow: 0 0 0 2px rgba(18, 140, 126, 0.14);
-    }
-
-    .list {
-      overflow: auto;
-      background: #fff;
-    }
-
-    .chat-item {
-      padding: 13px 16px;
-      border-bottom: 1px solid #eef1f3;
-      display: flex;
-      gap: 12px;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-
-    .chat-item.active {
-      background: #f0f2f5;
-    }
-
-    .chat-item:hover {
-      background: #f8fafb;
-    }
-
-    .chat-meta {
-      min-width: 0;
-      flex: 1;
-      display: grid;
-      gap: 5px;
-    }
-
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .preview,
-    .phone-line {
-      color: var(--muted);
-      font-size: 0.9rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .phone-line {
-      font-size: 0.8rem;
-    }
-
-    .badge {
-      min-width: 22px;
-      height: 22px;
-      border-radius: 11px;
-      background: var(--green-soft);
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-size: 0.8rem;
-      padding: 0 6px;
-      flex: 0 0 auto;
-    }
-
-    .add-form {
-      padding: 14px 16px;
-      border-top: 1px solid var(--line);
-      background: var(--sidebar);
-      display: grid;
-      gap: 10px;
-    }
-
-    .add-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .add-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .mini-btn,
-    .send-btn {
-      background: var(--green);
-      color: #fff;
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-weight: 700;
-    }
-
-    .mini-btn:hover,
-    .send-btn:hover {
-      background: #0f7b6f;
-    }
-
-    .chat {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      background: var(--bg);
-    }
-
-    .chat-status {
-      display: grid;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .topbar {
+      background: rgba(0,0,0,0.3);
+      color: #22c55e;
+      padding:15px;
+      font-weight:bold;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
 
     .messages {
-      padding: 20px 24px;
-      overflow: auto;
-      background-image:
-        radial-gradient(var(--chat-pattern) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
-      background-size: 18px 18px, 100% 100%;
-      display: grid;
-      gap: 10px;
-      align-content: start;
-    }
-
-    .day-chip {
-      justify-self: center;
-      background: rgba(255, 255, 255, 0.88);
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 0.78rem;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+      flex:1;
+      overflow-y:auto;
+      padding:15px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      background: #020617;
     }
 
     .bubble {
-      max-width: min(72%, 720px);
-      padding: 8px 10px 7px;
-      border-radius: 10px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
-      background: #fff;
-      justify-self: start;
-      position: relative;
+      max-width:70%;
+      padding:10px;
+      border-radius:10px;
+      background: #1e293b;
+      color: white;
     }
 
-    .bubble.self {
-      background: var(--green-pale);
-      justify-self: end;
-    }
-
-    .bubble::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      width: 12px;
-      height: 12px;
-      background: inherit;
-      clip-path: polygon(0 0, 100% 0, 0 100%);
-    }
-
-    .bubble:not(.self)::before {
-      left: -6px;
-    }
-
-    .bubble.self::before {
-      right: -6px;
-      transform: scaleX(-1);
-    }
-
-    .bubble-author {
-      font-size: 0.78rem;
-      color: var(--green-dark);
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-
-    .bubble.self .bubble-author {
-      color: #0b6f62;
-    }
-
-    .bubble-text {
-      white-space: pre-wrap;
-      word-break: break-word;
-      line-height: 1.42;
-    }
-
-    .bubble-meta {
-      margin-top: 4px;
-      font-size: 0.76rem;
-      color: var(--muted);
-      text-align: right;
+    .self {
+      align-self:flex-end;
+      background:#22c55e;
+      color:black;
     }
 
     .composer {
-      background: var(--bar);
-      border-top: 1px solid var(--line);
-      padding: 10px 16px;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 10px;
-      align-items: center;
+      display:flex;
+      padding:10px;
+      background:#020617;
     }
 
-    .composer-input {
-      background: #fff;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      padding: 0 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    input {
+      flex:1;
+      padding:10px;
+      border-radius:20px;
+      border:none;
+      outline:none;
+      background: #1e293b;
+      color: white;
     }
 
-    .composer-input input {
-      padding: 13px 0;
+    button {
+      margin-left:10px;
+      padding:10px 15px;
+      border:none;
+      background:#22c55e;
+      color:black;
+      border-radius:20px;
+      cursor:pointer;
     }
 
-    .empty-chat {
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 32px;
-      color: var(--muted);
+    button:hover {
+      background: #16a34a;
     }
 
-    .empty-card {
-      background: rgba(255, 255, 255, 0.88);
-      border-radius: 14px;
-      padding: 24px;
-      max-width: 420px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+.tiny {
+  font-size:0.7rem;
+  color:#cbd5f5; /* Lichter blauw voor betere leesbaarheid */
+  text-align:right;
+}
+
+    .author {
+      font-size:0.75rem;
+      font-weight:bold;
+      color:#22c55e;
     }
 
-    @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 1fr;
-        height: auto;
-        min-height: 100vh;
-        width: 100%;
-        margin: 0;
-        border-radius: 0;
-      }
-
-      .sidebar {
-        max-height: 44vh;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .add-row {
-        grid-template-columns: 1fr;
-      }
-
-      .bubble {
-        max-width: 88%;
-      }
-
-      .app {
-        width: 100%;
-      }
-
-      body {
-        background: var(--bg);
-      }
+    #login {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex:1;
     }
   </style>
 </head>
 <body>
-  <main class="app" id="app"></main>
-  <script>
-    const USER_KEY = "pulsechat-user";
-    const APP_KEY = "pulsechat-app-state";
 
-    const seed = {
-      contacts: [
-        {
-          id: "c1",
-          name: "Mila Carter",
-          phone: "+31690001111",
-          unread: 2,
-          messages: [
-            { id: "m1", sender: "other", author: "Mila Carter", time: "09:12", text: "Hoi, kunnen we hier chatten?" },
-            { id: "m2", sender: "self", author: "Ik", time: "09:13", text: "Ja, dit ziet er nu meer uit als WhatsApp." },
-            { id: "m4", sender: "other", author: "Mila Carter", time: "09:14", text: "Veel netter zo. Vooral de chatlijst en bubbels." }
-          ]
-        },
-        {
-          id: "c2",
-          name: "Noah Reed",
-          phone: "+31690002222",
-          unread: 0,
-          messages: [
-            { id: "m3", sender: "other", author: "Noah Reed", time: "Gisteren", text: "Stuur je me straks een bericht?" }
-          ]
-        }
-      ]
-    };
+<div class="topbar">
+  <span>ChatZone</span>
+  <button id="logoutBtn" style="display:none;">Logout</button>
+</div>
 
-    function getUser() {
-      try { return JSON.parse(localStorage.getItem(USER_KEY) || "null"); } catch { return null; }
-    }
+<div id="login">
+  <button id="googleLoginBtn">Login met Google</button>
+</div>
 
-    const user = getUser();
-    if (!user) window.location.href = "index.html";
+<div id="chat" style="display:none; flex:1; flex-direction:column;">
+  <div id="messages" class="messages"></div>
+  <form id="composerForm" class="composer">
+    <input id="composerInput" placeholder="Typ een bericht..." autocomplete="off">
+    <button type="submit">Verstuur</button>
+  </form>
+</div>
 
-    function cloneSeed() {
-      return JSON.parse(JSON.stringify(seed));
-    }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    function loadState() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(APP_KEY) || "null");
-        if (saved && Array.isArray(saved.contacts)) return saved;
-      } catch {}
-      return cloneSeed();
-    }
+const firebaseConfig = {
+  apiKey: "AIzaSyDiX_do-_xdxn1O1tLzXdxQDK6K3ckvgu8",
+  authDomain: "stalkensite.firebaseapp.com",
+  projectId: "stalkensite",
+  storageBucket: "stalkensite.firebasestorage.app",
+  messagingSenderId: "195158731196",
+  appId: "1:195158731196:web:a7f85f6412b9bc8c94a3b9",
+  measurementId: "G-W9HMETLKG0"
+};
 
-    let state = loadState();
-    let activeId = state.contacts[0]?.id || null;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-    function saveState() {
-      localStorage.setItem(APP_KEY, JSON.stringify(state));
-    }
+const loginDiv = document.getElementById("login");
+const chatDiv = document.getElementById("chat");
+const googleBtn = document.getElementById("googleLoginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const messagesDiv = document.getElementById("messages");
+const composerForm = document.getElementById("composerForm");
+const composerInput = document.getElementById("composerInput");
 
-    function initials(name) {
-      return (name || "?").split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-    }
+const provider = new GoogleAuthProvider();
 
-    function esc(value) {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
+googleBtn.addEventListener("click", async () => {
+  try { await signInWithPopup(auth, provider); } 
+  catch(e) { console.error(e); }
+});
 
-    function activeChat() {
-      return state.contacts.find((contact) => contact.id === activeId) || state.contacts[0] || null;
-    }
+logoutBtn.addEventListener("click", () => signOut(auth));
 
-    function timeNow() {
-      return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
+let currentUser = null;
 
-    function makeId(prefix) {
-      return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
-    }
+onAuthStateChanged(auth, user => {
+  if (user) {
+    currentUser = user;
+    loginDiv.style.display = "none";
+    chatDiv.style.display = "flex";
+    logoutBtn.style.display = "inline-block";
+    listenMessages();
+  } else {
+    currentUser = null;
+    loginDiv.style.display = "flex";
+    chatDiv.style.display = "none";
+    logoutBtn.style.display = "none";
+  }
+});
 
-    function previewText(contact) {
-      return contact.messages.at(-1)?.text || contact.phone;
-    }
+const messagesRef = collection(db, "messages");
 
-    function render(filter = "") {
-      const active = activeChat();
-      const contacts = state.contacts.filter((contact) => {
-        const text = `${contact.name} ${contact.phone} ${previewText(contact)}`.toLowerCase();
-        return text.includes(filter.toLowerCase());
-      });
+async function sendMsg(text) {
+  if (!text || !currentUser) return;
+  await addDoc(messagesRef, {
+    text,
+    author: currentUser.displayName,
+    created: Date.now()
+  });
+}
 
-      document.getElementById("app").innerHTML = `
-        <aside class="sidebar">
-          <div class="topbar">
-            <div class="user">
-              <div class="avatar">${esc(initials(user.displayName))}</div>
-              <div class="user-meta">
-                <div>
-                  <div class="name">${esc(user.displayName)}</div>
-                  <div class="muted">${esc(user.phone)}</div>
-                </div>
-              </div>
-            </div>
-            <button class="icon-btn" id="editProfile">Profiel</button>
-          </div>
+function listenMessages() {
+  const q = query(messagesRef, orderBy("created"));
 
-          <div class="search">
-            <label class="search-box">
-              <span>Zoek</span>
-              <input id="searchInput" type="text" placeholder="Zoek of start nieuw gesprek" value="${esc(filter)}">
-            </label>
-          </div>
+  onSnapshot(q, async snapshot => {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-          <div class="list">
-            ${contacts.length ? contacts.map((contact) => `
-              <div class="chat-item ${contact.id === activeId ? "active" : ""}" data-chat="${contact.id}">
-                <div class="avatar">${esc(initials(contact.name))}</div>
-                <div class="chat-meta">
-                  <div class="row">
-                    <div class="name">${esc(contact.name)}</div>
-                    <div class="tiny">${esc(contact.messages.at(-1)?.time || "")}</div>
-                  </div>
-                  <div class="row">
-                    <div class="preview">${esc(previewText(contact))}</div>
-                    ${contact.unread ? `<div class="badge">${contact.unread}</div>` : ""}
-                  </div>
-                  <div class="phone-line">${esc(contact.phone)}</div>
-                </div>
-              </div>
-            `).join("") : `<div class="empty-chat"><div class="empty-card">Geen contacten gevonden.</div></div>`}
-          </div>
+    messagesDiv.innerHTML = "";
 
-          <form class="add-form" id="addContactForm">
-            <div class="add-title">
-              <div class="name">Nieuw contact</div>
-              <div class="tiny">Snel toevoegen</div>
-            </div>
-            <div class="add-row">
-              <input id="contactName" type="text" placeholder="Naam" required>
-              <input id="contactPhone" type="tel" placeholder="Telefoonnummer" required>
-            </div>
-            <button class="mini-btn" type="submit">Contact toevoegen</button>
-          </form>
-        </aside>
+    for (const docSnap of snapshot.docs) {
+      const m = docSnap.data();
 
-        <section class="chat">
-          ${active ? `
-            <div class="chat-topbar">
-              <div class="contact-head">
-                <div class="avatar">${esc(initials(active.name))}</div>
-                <div class="chat-status">
-                  <div class="name">${esc(active.name)}</div>
-                  <div class="muted">laatst gezien recent · ${esc(active.phone)}</div>
-                </div>
-              </div>
-              <div class="header-actions">
-                <button class="icon-btn" id="resetData">Reset</button>
-              </div>
-            </div>
-
-            <div class="messages" id="messages">
-              <div class="day-chip">Vandaag</div>
-              ${active.messages.map((message) => `
-                <div class="bubble ${message.sender === "self" ? "self" : ""}">
-                  ${message.sender === "other" ? `<div class="bubble-author">${esc(message.author)}</div>` : ""}
-                  <div class="bubble-text">${esc(message.text)}</div>
-                  <div class="bubble-meta">${esc(message.time)}</div>
-                </div>
-              `).join("")}
-            </div>
-
-            <form class="composer" id="composerForm">
-              <button class="attach-btn" type="button" aria-label="Bijlage">+</button>
-              <label class="composer-input">
-                <input id="composerInput" type="text" placeholder="Typ een bericht" required>
-              </label>
-              <button class="send-btn" type="submit">Verstuur</button>
-            </form>
-          ` : `
-            <div class="empty-chat">
-              <div class="empty-card">
-                Selecteer een chat of voeg een contact toe.
-              </div>
-            </div>
-          `}
-        </section>
-      `;
-
-      bindEvents(filter);
-      const messages = document.getElementById("messages");
-      if (messages) messages.scrollTop = messages.scrollHeight;
-    }
-
-    function bindEvents(filter) {
-      document.querySelectorAll("[data-chat]").forEach((item) => {
-        item.addEventListener("click", () => {
-          activeId = item.dataset.chat;
-          const chat = activeChat();
-          if (chat) chat.unread = 0;
-          saveState();
-          render(filter);
-        });
-      });
-
-      document.getElementById("searchInput").addEventListener("input", (event) => render(event.target.value));
-      document.getElementById("editProfile").addEventListener("click", () => window.location.href = "index.html");
-
-      const addForm = document.getElementById("addContactForm");
-      addForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const name = document.getElementById("contactName").value.trim();
-        const phone = document.getElementById("contactPhone").value.trim();
-        if (!name || !phone) return;
-
-        const contact = {
-          id: makeId("c"),
-          name,
-          phone,
-          unread: 0,
-          messages: [
-            { id: makeId("m"), sender: "other", author: name, time: "Nu", text: `Hoi ${user.displayName}, dit is een nieuw gesprek.` }
-          ]
-        };
-
-        state.contacts.unshift(contact);
-        activeId = contact.id;
-        addForm.reset();
-        saveState();
-        render(filter);
-      });
-
-      const composer = document.getElementById("composerForm");
-      if (composer) {
-        composer.addEventListener("submit", (event) => {
-          event.preventDefault();
-          const input = document.getElementById("composerInput");
-          const text = input.value.trim();
-          const chat = activeChat();
-          if (!text || !chat) return;
-
-          chat.messages.push({
-            id: makeId("m"),
-            sender: "self",
-            author: user.displayName,
-            time: timeNow(),
-            text
-          });
-
-          input.value = "";
-          saveState();
-          render(filter);
-        });
+      if (m.created < todayStart) {
+        await deleteDoc(doc(db, "messages", docSnap.id));
+        continue;
       }
 
-      const resetButton = document.getElementById("resetData");
-      if (resetButton) {
-        resetButton.addEventListener("click", () => {
-          localStorage.removeItem(APP_KEY);
-          state = cloneSeed();
-          activeId = state.contacts[0]?.id || null;
-          saveState();
-          render(filter);
-        });
-      }
+      const div = document.createElement("div");
+      div.className = "bubble " + (m.author === currentUser.displayName ? "self" : "");
+      div.innerHTML = `<div class="author">${m.author}</div><div>${m.text}</div><div class="tiny">${new Date(m.created).toLocaleTimeString()}</div>`;
+      messagesDiv.appendChild(div);
     }
 
-    render();
-  </script>
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+}
+
+composerForm.addEventListener("submit", e => {
+  e.preventDefault();
+  sendMsg(composerInput.value.trim());
+  composerInput.value = "";
+});
+
+composerInput.addEventListener("keydown", e => {
+  if(e.key === "Enter") {
+    e.preventDefault();
+    composerForm.dispatchEvent(new Event("submit"));
+  }
+});
+</script>
 </body>
 </html>
