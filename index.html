@@ -1,111 +1,216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PulseChat Setup</title>
-  <style>
-    :root { --bg:#f5efe3; --panel:rgba(255,251,245,.88); --panel-strong:#fffaf0; --text:#1f2630; --muted:#6a7180; --accent:#e85d3f; --accent-strong:#ca4124; --accent-soft:rgba(232,93,63,.12); --stroke:rgba(31,38,48,.1); --shadow:0 24px 60px rgba(85,52,34,.18); }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif; color:var(--text); background:radial-gradient(circle at top left, rgba(232,93,63,.25), transparent 32%), radial-gradient(circle at bottom right, rgba(37,99,235,.12), transparent 28%), linear-gradient(135deg,#f8f3e8 0%,#f1e0c7 100%); display:grid; place-items:center; padding:24px; }
-    .shell { width:min(1080px,100%); display:grid; grid-template-columns:1.05fr .95fr; background:var(--panel); border:1px solid rgba(255,255,255,.5); box-shadow:var(--shadow); border-radius:28px; overflow:hidden; backdrop-filter:blur(16px); }
-    .hero,.card { padding:40px; }
-    .hero { background:linear-gradient(160deg, rgba(31,38,48,.94), rgba(63,43,33,.92)); color:#fff8ee; position:relative; overflow:hidden; }
-    .hero::after { content:""; position:absolute; inset:auto -80px -120px auto; width:280px; height:280px; background:radial-gradient(circle, rgba(232,93,63,.42), transparent 65%); filter:blur(8px); }
-    .badge { display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; background:rgba(255,255,255,.1); font-size:13px; letter-spacing:.04em; text-transform:uppercase; }
-    h1 { margin:20px 0 14px; font-size:clamp(2.4rem,4vw,4.5rem); line-height:.96; letter-spacing:-.05em; }
-    .hero p { max-width:38ch; color:rgba(255,248,238,.8); font-size:1.05rem; line-height:1.6; margin:0 0 24px; }
-    .feature-list,.grid { display:grid; gap:14px; }
-    .feature { padding:14px 16px; border-radius:18px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08); }
-    .feature strong { display:block; margin-bottom:4px; }
-    .card { display:flex; flex-direction:column; justify-content:center; gap:18px; background:rgba(255,250,240,.84); }
-    .card h2 { margin:0; font-size:1.9rem; letter-spacing:-.04em; }
-    .card p,.hint { margin:0; color:var(--muted); line-height:1.6; }
-    label { display:grid; gap:8px; font-size:.95rem; font-weight:600; }
-    input { width:100%; border:1px solid var(--stroke); border-radius:16px; padding:15px 16px; font:inherit; background:var(--panel-strong); color:var(--text); outline:none; transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
-    input:focus { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); transform:translateY(-1px); }
-    button { border:0; border-radius:16px; padding:15px 18px; font:inherit; font-weight:700; cursor:pointer; background:linear-gradient(135deg, var(--accent), #ff866b); color:white; transition:transform .2s ease, box-shadow .2s ease; box-shadow:0 16px 24px rgba(232,93,63,.25); }
-    button:hover { transform:translateY(-2px); box-shadow:0 20px 28px rgba(232,93,63,.28); }
-    .secondary { background:transparent; color:var(--text); border:1px solid var(--stroke); box-shadow:none; }
-    .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .status { min-height:1.3em; font-size:.92rem; color:var(--accent-strong); font-weight:600; }
-    @media (max-width:900px) { .shell { grid-template-columns:1fr; } .hero,.card { padding:28px; } }
-    @media (max-width:560px) { .row { grid-template-columns:1fr; } h1 { font-size:2.6rem; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Site</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: #22c55e;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #22c55e;
+        }
+
+        /* HERO */
+        .hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px;
+        }
+
+        .hero-text {
+            max-width: 500px;
+        }
+
+        .hero-text h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero-text p {
+            color: #cbd5f5;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #22c55e;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #16a34a;
+            transform: scale(1.05);
+        }
+
+        /* MOCK CHAT BOX */
+        .chat-preview {
+            width: 350px;
+            background: #020617;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .received {
+            background: #1e293b;
+        }
+
+        .sent {
+            background: #22c55e;
+            color: black;
+            margin-left: auto;
+        }
+
+        /* FEATURES */
+        .features {
+            display: flex;
+            justify-content: space-around;
+            padding: 40px;
+            background: #020617;
+        }
+
+        .feature {
+            max-width: 250px;
+            text-align: center;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            color: #22c55e;
+        }
+
+        .feature p {
+            color: #94a3b8;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            color: #64748b;
+        }
+
+        @media(max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .chat-preview {
+                margin-top: 30px;
+            }
+
+            .features {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+    </style>
 </head>
 <body>
-  <main class="shell">
-    <section class="hero">
-      <div class="badge">PulseChat social messenger</div>
-      <h1>Chat by number, username, or community.</h1>
-      <p>Set up your profile, add people with a phone number like WhatsApp, send friend requests like Snapchat, and hang out in topic channels like Discord.</p>
-      <div class="feature-list">
-        <div class="feature"><strong>Phone number discovery</strong>Message people directly through saved numbers and quick contact cards.</div>
-        <div class="feature"><strong>Friend request flow</strong>Add usernames, accept requests, and keep your social circle organized.</div>
-        <div class="feature"><strong>Servers and channels</strong>Jump between a general lounge, gaming space, study room, and more.</div>
-      </div>
-    </section>
-    <section class="card">
-      <div class="grid">
-        <h2>Create your profile</h2>
-        <p>Your details are stored in your browser so the app works instantly without a backend.</p>
-      </div>
-      <form id="setupForm" class="grid">
-        <label>Display name<input id="displayName" type="text" placeholder="Tuurd" maxlength="28" required></label>
-        <div class="row">
-          <label>Username<input id="username" type="text" placeholder="tuurddev" maxlength="20" required></label>
-          <label>Phone number<input id="phone" type="tel" placeholder="+31 6 12345678" maxlength="20" required></label>
-        </div>
-        <label>Status<input id="statusText" type="text" placeholder="Building something cool" maxlength="60"></label>
-        <div class="row">
-          <button type="submit">Enter PulseChat</button>
-          <button id="demoButton" type="button" class="secondary">Use demo profile</button>
-        </div>
-      </form>
-      <div class="hint">Tip: once you enter, you can add contacts, accept friend requests, and create messages right away.</div>
-      <div id="status" class="status" aria-live="polite"></div>
-    </section>
-  </main>
-  <script>
-    const STORAGE_KEY = "pulsechat-user";
-    const status = document.getElementById("status");
-    const normalizePhone = (value) => value.replace(/[^\d+]/g, "").trim();
-    function saveProfile(profile) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...profile, phone: normalizePhone(profile.phone) }));
-    }
-    function submitProfile(profile) {
-      const cleanName = profile.displayName.trim();
-      const cleanUser = profile.username.trim().replace(/\s+/g, "").replace(/^@+/, "");
-      const cleanPhone = normalizePhone(profile.phone);
-      if (!cleanName || !cleanUser || !cleanPhone) {
-        status.textContent = "Please fill in your name, username, and phone number.";
-        return;
-      }
-      saveProfile({ displayName: cleanName, username: cleanUser, phone: cleanPhone, statusText: profile.statusText.trim() });
-      window.location.href = "chat.html";
-    }
-    document.getElementById("setupForm").addEventListener("submit", (event) => {
-      event.preventDefault();
-      submitProfile({
-        displayName: document.getElementById("displayName").value,
-        username: document.getElementById("username").value,
-        phone: document.getElementById("phone").value,
-        statusText: document.getElementById("statusText").value
-      });
-    });
-    document.getElementById("demoButton").addEventListener("click", () => submitProfile({ displayName: "Tuurd", username: "tuurddev", phone: "+31612345678", statusText: "Ready to chat" }));
-    const existingProfile = localStorage.getItem(STORAGE_KEY);
-    if (existingProfile) {
-      try {
-        const parsed = JSON.parse(existingProfile);
-        document.getElementById("displayName").value = parsed.displayName || "";
-        document.getElementById("username").value = parsed.username || "";
-        document.getElementById("phone").value = parsed.phone || "";
-        document.getElementById("statusText").value = parsed.statusText || "";
-      } catch (error) {
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    }
-  </script>
+
+<header>
+    <h1>ChatZone</h1>
+    <nav>
+        <a href="#">Home</a>
+        <a href="chat.html">Chat</a>
+        <a href="#">Info</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-text">
+        <h2>Praat met iedereen, overal</h2>
+        <p>
+            Welkom op ChatZone! Een snelle en moderne chatwebsite waar je eenvoudig berichten kunt sturen,
+            live kunt praten en plezier kunt maken met vrienden.
+        </p>
+
+        <!-- LINK NAAR CHAT -->
+        <a href="chat.html" class="btn">Ga naar Chat</a>
+    </div>
+
+    <div class="chat-preview">
+        <div class="message received">Hey! Ben je online?</div>
+        <div class="message sent">Ja, ik ben er 🔥</div>
+        <div class="message received">Kom naar de chat!</div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature">
+        <h3>⚡ Snel</h3>
+        <p>Realtime berichten zonder vertraging.</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔒 Veilig</h3>
+        <p>Jouw gesprekken blijven privé en beschermd.</p>
+    </div>
+
+    <div class="feature">
+        <h3>🌍 Overal</h3>
+        <p>Werkt op mobiel, tablet en desktop.</p>
+    </div>
+</section>
+
+<footer>
+    © 2026 ChatZone - Alle rechten voorbehouden
+</footer>
+
 </body>
 </html>
